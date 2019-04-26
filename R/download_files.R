@@ -144,3 +144,30 @@ for (link in links) {
   link <- paste0("https://www.waspc.org", link)
   download.file(link, destfile = link_name, mode = "wb")
 }
+
+
+# Download Georgia data ------------------------------------------------
+setwd(here::here("data/raw/georgia"))
+
+
+nodes <- data.frame(year = 2015:2019,
+                    node = c(4036,
+                             4035,
+                             4030,
+                             4777,
+                             5617))
+
+for (i in 1:nrow(nodes)) {
+  links <- get_links(paste0("https://www.dca.ga.gov/node/", nodes$node[i]))
+  links <- links[grep("jail.*report.*.pdf", links)]
+
+  for (n in 1:length(links)) {
+    link_name = paste0("georgia_county_jail_",
+                       tolower(month.abb[n]),
+                       "_",
+                       nodes$year[i],
+                       ".pdf")
+
+    download.file(links[n], destfile = link_name, mode = "wb")
+  }
+}
